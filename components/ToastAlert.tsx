@@ -24,6 +24,3 @@ export const notifyInfo = (message: string) => {
         autoClose: 3000,
     });
 };
-
-// Include <ToastContainer /> in your app root or layout
-export const ToastAlertContainer = () => <ToastContainer />;
