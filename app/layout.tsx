@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   title: "FinFlow",
   description: "FinFLow is a modern banking platform for everyone.",
   icons: {
-    icon: '/icons/logo.svg'
+    icon: '/icons/logo-main.png',
   }
 };
 
