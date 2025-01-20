@@ -70,10 +70,12 @@ const config = {
         },
       },
       backgroundImage: {
+        "sidebar-gradient": "linear-gradient(195deg, rgb(66, 66, 74), rgb(25, 25, 25))",
         "bank-gradient": "linear-gradient(90deg, #0179FE 0%, #4893FF 100%)",
         "gradient-mesh": "url('/icons/gradient-mesh.svg')",
         "bank-green-gradient":
           "linear-gradient(90deg, #01797A 0%, #489399 100%)",
+        'primary-gradient': 'linear-gradient(to right, #1051B2FF, #1e88e5)'
       },
       boxShadow: {
         form: "0px 1px 2px 0px rgba(16, 24, 40, 0.05)",

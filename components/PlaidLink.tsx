@@ -28,14 +28,14 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
 
     router.push('/');
   }, [user])
-  
+
   const config: PlaidLinkOptions = {
     token,
     onSuccess
   }
 
   const { open, ready } = usePlaidLink(config);
-  
+
   return (
     <>
       {variant === 'primary' ? (
@@ -48,23 +48,24 @@ const PlaidLink = ({ user, variant }: PlaidLinkProps) => {
         </Button>
       ): variant === 'ghost' ? (
         <Button onClick={() => open()} variant="ghost" className="plaidlink-ghost">
-          <Image 
+          <Image
             src="/icons/connect-bank.svg"
             alt="connect bank"
-            width={24}
-            height={24}
+            width={20}
+            height={20}
           />
-          <p className='hiddenl text-[16px] font-semibold text-black-2 xl:block'>Connect bank</p>
+          <p className='hiddenl text-sm font-semibold text-gray-500 xl:block'>Connect bank</p>
         </Button>
       ): (
         <Button onClick={() => open()} className="plaidlink-default">
-          <Image 
+          <Image
             src="/icons/connect-bank.svg"
             alt="connect bank"
-            width={24}
-            height={24}
+            width={20}
+            height={20}
+            className="text-gray-500 hover:text-800"
           />
-          <p className='text-[16px] font-semibold text-black-2'>Connect bank</p>
+          <p className='text-sm font-semibold text-gray-500 hover:text-800'>Connect bank</p>
         </Button>
       )}
     </>
