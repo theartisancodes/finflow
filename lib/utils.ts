@@ -1,8 +1,9 @@
 /* eslint-disable no-prototype-builtins */
-import { type ClassValue, clsx } from "clsx";
-import qs from "query-string";
-import { twMerge } from "tailwind-merge";
-import { z } from "zod";
+import { clsx, type ClassValue } from 'clsx';
+import qs from 'query-string';
+import { twMerge } from 'tailwind-merge';
+import { z } from 'zod';
+import { AccountTypes, CategoryCount, Transaction } from '@/types';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -10,50 +11,50 @@ export function cn(...inputs: ClassValue[]) {
 
 export const formatDateTime = (dateString: Date) => {
   const dateTimeOptions: Intl.DateTimeFormatOptions = {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
+    weekday: 'short',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
   };
 
   const dateDayOptions: Intl.DateTimeFormatOptions = {
-    weekday: "short",
-    year: "numeric",
-    month: "2-digit",
-    day: "2-digit",
+    weekday: 'short',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit'
   };
 
   const dateOptions: Intl.DateTimeFormatOptions = {
-    month: "short",
-    year: "numeric",
-    day: "numeric",
+    month: 'short',
+    year: 'numeric',
+    day: 'numeric'
   };
 
   const timeOptions: Intl.DateTimeFormatOptions = {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: true,
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
   };
 
   const formattedDateTime: string = new Date(dateString).toLocaleString(
-    "en-US",
+    'en-US',
     dateTimeOptions
   );
 
   const formattedDateDay: string = new Date(dateString).toLocaleString(
-    "en-US",
+    'en-US',
     dateDayOptions
   );
 
   const formattedDate: string = new Date(dateString).toLocaleString(
-    "en-US",
+    'en-US',
     dateOptions
   );
 
   const formattedTime: string = new Date(dateString).toLocaleString(
-    "en-US",
+    'en-US',
     timeOptions
   );
 
@@ -61,32 +62,31 @@ export const formatDateTime = (dateString: Date) => {
     dateTime: formattedDateTime,
     dateDay: formattedDateDay,
     dateOnly: formattedDate,
-    timeOnly: formattedTime,
+    timeOnly: formattedTime
   };
 };
 
 export function formatAmount(amount: number): string {
-  const formatter = new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: "USD",
-    minimumFractionDigits: 2,
+  const formatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2
   });
 
   return formatter.format(amount);
 }
 
-export const  parseStringify =(data: any) => {
+export const parseStringify = (data: any) => {
   try {
     return JSON.parse(JSON.stringify(data));
   } catch (error) {
     console.error('Error in parseStringify:', error);
     return null;
   }
-}
-
+};
 
 export const removeSpecialCharacters = (value: string) => {
-  return value.replace(/[^\w\s]/gi, "");
+  return value.replace(/[^\w\s]/gi, '');
 };
 
 interface UrlQueryParams {
@@ -103,7 +103,7 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
   return qs.stringifyUrl(
     {
       url: window.location.pathname,
-      query: currentUrl,
+      query: currentUrl
     },
     { skipNull: true }
   );
@@ -111,28 +111,28 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
 
 export function getAccountTypeColors(type: AccountTypes) {
   switch (type) {
-    case "depository":
+    case 'depository':
       return {
-        bg: "bg-blue-25",
-        lightBg: "bg-blue-100",
-        title: "text-blue-900",
-        subText: "text-blue-700",
+        bg: 'bg-blue-25',
+        lightBg: 'bg-blue-100',
+        title: 'text-blue-900',
+        subText: 'text-blue-700'
       };
 
-    case "credit":
+    case 'credit':
       return {
-        bg: "bg-success-25",
-        lightBg: "bg-success-100",
-        title: "text-success-900",
-        subText: "text-success-700",
+        bg: 'bg-success-25',
+        lightBg: 'bg-success-100',
+        title: 'text-success-900',
+        subText: 'text-success-700'
       };
 
     default:
       return {
-        bg: "bg-green-25",
-        lightBg: "bg-green-100",
-        title: "text-green-900",
-        subText: "text-green-700",
+        bg: 'bg-green-25',
+        lightBg: 'bg-green-100',
+        title: 'text-green-900',
+        subText: 'text-green-700'
       };
   }
 }
@@ -160,7 +160,7 @@ export function countTransactionCategories(
     (category) => ({
       name: category,
       count: categoryCounts[category],
-      totalCount,
+      totalCount
     })
   );
 
@@ -170,7 +170,7 @@ export function countTransactionCategories(
 }
 
 export function extractCustomerIdFromUrl(url: string) {
-  const parts = url.split("/");
+  const parts = url.split('/');
   const customerId = parts[parts.length - 1];
 
   return customerId;
@@ -189,20 +189,23 @@ export const getTransactionStatus = (date: Date) => {
   const twoDaysAgo = new Date(today);
   twoDaysAgo.setDate(today.getDate() - 2);
 
-  return date > twoDaysAgo ? "Processing" : "Success";
+  return date > twoDaysAgo ? 'Processing' : 'Success';
 };
 
-export const authFormSchema = (type: string) => z.object({
-  // sign up
-  firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
-  city: type === 'sign-in' ? z.string().optional() : z.string().max(50),
-  state: type === 'sign-in' ? z.string().optional() : z.string().min(2).max(2),
-  postalCode: type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
-  dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
-  // both
-  email: z.string().email(),
-  password: z.string().min(8),
-})
+export const authFormSchema = (type: string) =>
+  z.object({
+    // sign up
+    firstName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+    lastName: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+    address1: type === 'sign-in' ? z.string().optional() : z.string().max(50),
+    city: type === 'sign-in' ? z.string().optional() : z.string().max(50),
+    state:
+      type === 'sign-in' ? z.string().optional() : z.string().min(2).max(2),
+    postalCode:
+      type === 'sign-in' ? z.string().optional() : z.string().min(3).max(6),
+    dateOfBirth: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+    ssn: type === 'sign-in' ? z.string().optional() : z.string().min(3),
+    // both
+    email: z.string().email(),
+    password: z.string().min(8)
+  });

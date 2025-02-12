@@ -1,7 +1,8 @@
-import Image from "next/image";
+import React from 'react';
+import Image from 'next/image';
 
 export default function RootLayout({
-  children,
+  children
 }: Readonly<{
   children: React.ReactNode;
 }>) {

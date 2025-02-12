@@ -1,19 +1,13 @@
-"use client";
+'use client';
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-
-import { createTransfer } from "@/lib/actions/dwolla.actions";
-import { createTransaction } from "@/lib/actions/transaction.actions";
-import { getBank, getBankByAccountId } from "@/lib/actions/user.actions";
-import { decryptId } from "@/lib/utils";
-
-import { BankDropdown } from "./BankDropdown";
-import { Button } from "./ui/button";
+import { useState } from 'react';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Loader2 } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { BankDropdown } from './BankDropdown';
+import { Button } from './ui/button';
 import {
   Form,
   FormControl,
@@ -21,17 +15,22 @@ import {
   FormField,
   FormItem,
   FormLabel,
-  FormMessage,
-} from "./ui/form";
-import { Input } from "./ui/input";
-import { Textarea } from "./ui/textarea";
+  FormMessage
+} from './ui/form';
+import { Input } from './ui/input';
+import { Textarea } from './ui/textarea';
+import { createTransfer } from '@/lib/actions/dwolla.actions';
+import { createTransaction } from '@/lib/actions/transaction.actions';
+import { getBank, getBankByAccountId } from '@/lib/actions/user.actions';
+import { decryptId } from '@/lib/utils';
+import { PaymentTransferFormProps } from '@/types';
 
 const formSchema = z.object({
-  email: z.string().email("Invalid email address"),
-  name: z.string().min(4, "Transfer note is too short"),
-  amount: z.string().min(4, "Amount is too short"),
-  senderBank: z.string().min(4, "Please select a valid bank account"),
-  sharableId: z.string().min(8, "Please select a valid sharable Id"),
+  email: z.string().email('Invalid email address'),
+  name: z.string().min(4, 'Transfer note is too short'),
+  amount: z.string().min(4, 'Amount is too short'),
+  senderBank: z.string().min(4, 'Please select a valid bank account'),
+  sharableId: z.string().min(8, 'Please select a valid sharable Id')
 });
 
 const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
@@ -41,12 +40,12 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      name: "",
-      email: "",
-      amount: "",
-      senderBank: "",
-      sharableId: "",
-    },
+      name: '',
+      email: '',
+      amount: '',
+      senderBank: '',
+      sharableId: ''
+    }
   });
 
   const submit = async (data: z.infer<typeof formSchema>) => {
@@ -55,19 +54,18 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
     try {
       const receiverAccountId = decryptId(data.sharableId);
       const receiverBank = await getBankByAccountId({
-        accountId: receiverAccountId,
+        accountId: receiverAccountId
       });
       const senderBank = await getBank({ documentId: data.senderBank });
 
       const transferParams = {
         sourceFundingSourceUrl: senderBank.fundingSourceUrl,
         destinationFundingSourceUrl: receiverBank.fundingSourceUrl,
-        amount: data.amount,
+        amount: data.amount
       };
-      // create transfer
+
       const transfer = await createTransfer(transferParams);
 
-      // create transfer transaction
       if (transfer) {
         const transaction = {
           name: data.name,
@@ -76,18 +74,18 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
           senderBankId: senderBank.$id,
           receiverId: receiverBank.userId.$id,
           receiverBankId: receiverBank.$id,
-          email: data.email,
+          email: data.email
         };
 
         const newTransaction = await createTransaction(transaction);
 
         if (newTransaction) {
           form.reset();
-          router.push("/");
+          router.push('/');
         }
       }
     } catch (error) {
-      console.error("Submitting create transfer request failed: ", error);
+      console.error('Submitting create transfer request failed: ', error);
     }
 
     setIsLoading(false);
@@ -243,7 +241,7 @@ const PaymentTransferForm = ({ accounts }: PaymentTransferFormProps) => {
                 <Loader2 size={20} className="animate-spin" /> &nbsp; Sending...
               </>
             ) : (
-              "Transfer Funds"
+              'Transfer Funds'
             )}
           </Button>
         </div>

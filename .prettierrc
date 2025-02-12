@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "tabWidth": 2,
+  "trailingComma": "none",
+  "semi": true,
+  "plugins": ["@ianvs/prettier-plugin-sort-imports"],
+  "importOrder": [
+    "^react$",
+    "<THIRD_PARTY_MODULES>",
+    "^apps/(.*)",
+    "^../",
+    "^./constants",
+    "^./functions",
+    "^./(?!styles)(.*)",
+    "^./styles"
+  ],
+  "importOrderSeparation": true,
+  "importOrderSortSpecifiers": true
+}
