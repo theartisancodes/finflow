@@ -1,11 +1,13 @@
-"use client";
-import Error from "next/error";
+'use client';
 
+import Error from 'next/error';
 
 export default function GlobalError({ error }) {
-    return (
-        <div>
-            <Error statusCode={statusCode} />
-        </div>
-    );
+  const statusCode = error?.statusCode || 500;
+
+  return (
+    <div>
+      <Error statusCode={statusCode} />
+    </div>
+  );
 }
