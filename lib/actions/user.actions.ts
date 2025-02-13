@@ -2,6 +2,7 @@
 
 import { revalidatePath } from 'next/cache';
 import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 import { ID, Query } from 'node-appwrite';
 import {
   CountryCode,
@@ -137,20 +138,30 @@ export async function getLoggedInUser() {
     const user = await getUserInfo({ userId: result.$id });
 
     return parseStringify(user);
-  } catch (error) {
-    throw new Error(error as string);
+  } catch (error: unknown) {
+    console.error('Error in getLoggedInUser:', error);
+
+    if (error instanceof Error) {
+      redirect('/sign-in');
+    }
+
+    throw new Error('Failed to fetch logged in user due to an unknown error.');
   }
 }
 
 export const logoutAccount = async () => {
   try {
     const { account } = await createSessionClient();
-
     cookies().delete('appwrite-session');
 
-    await account.deleteSession('current');
-  } catch (error) {
-    throw new Error(error as string);
+    await account?.deleteSession('current');
+  } catch (error: unknown) {
+    console.error('Error during logout:', error);
+    if (error instanceof Error) {
+      throw new Error(`Logout failed: ${error.message}`);
+    }
+
+    throw new Error('Logout failed due to an unknown error.');
   }
 };
 

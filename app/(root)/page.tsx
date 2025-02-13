@@ -1,21 +1,31 @@
+'use client';
+
+import { redirect } from 'next/navigation';
 import HeaderBox from '@/components/HeaderBox';
 import RecentTransactions from '@/components/RecentTransactions';
 import RightSidebar from '@/components/RightSidebar';
 import TotalBalanceBox from '@/components/TotalBalanceBox';
 import { getAccount, getAccounts } from '@/lib/actions/bank.actions';
-import { getLoggedInUser } from '@/lib/actions/user.actions';
+import { getLoggedInUser, logoutAccount } from '@/lib/actions/user.actions';
 import { SearchParamProps } from '@/types';
 
 const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
   const currentPage = Number(page as string) || 1;
   const loggedIn = await getLoggedInUser();
+  if (!loggedIn) {
+    redirect('/sign-in');
+  }
+
   const accounts = await getAccounts({
     userId: loggedIn.$id
   });
 
-  if (!accounts) return;
+  if (Object?.keys(accounts)?.length === 0) {
+    await logoutAccount();
+    redirect('/sign-in');
+  }
 
-  const accountsData = accounts?.data;
+  const accountsData = accounts.data;
   const appwriteItemId = (id as string) || accountsData[0]?.appwriteItemId;
 
   const account = await getAccount({ appwriteItemId });
@@ -27,14 +37,14 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
           <HeaderBox
             type="greeting"
             title="Welcome"
-            user={loggedIn?.firstName || 'Guest'}
+            user={loggedIn.firstName || 'Guest'}
             subtext="Access and manage your account and transactions efficiently."
           />
 
           <TotalBalanceBox
             accounts={accountsData}
-            totalBanks={accounts?.totalBanks}
-            totalCurrentBalance={accounts?.totalCurrentBalance}
+            totalBanks={accounts.totalBanks}
+            totalCurrentBalance={accounts.totalCurrentBalance}
           />
         </header>
 
@@ -49,7 +59,7 @@ const Home = async ({ searchParams: { id, page } }: SearchParamProps) => {
       <RightSidebar
         user={loggedIn}
         transactions={account?.transactions}
-        banks={accountsData?.slice(0, 2)}
+        banks={accountsData.slice(0, 2)}
       />
     </section>
   );

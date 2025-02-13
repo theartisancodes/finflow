@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import CustomInput from './CustomInput';
@@ -61,7 +61,11 @@ const AuthForm = ({ type }: { type: string }) => {
           email: data.email,
           password: data.password
         });
-        if (response) router.push('/');
+
+        console.log(response, '__response');
+        if (response?.userId) {
+          redirect('/');
+        }
       }
     } catch (error: unknown) {
       const errorMsg =
