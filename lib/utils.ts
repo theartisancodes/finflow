@@ -66,7 +66,11 @@ export const formatDateTime = (dateString: Date) => {
   };
 };
 
-export function formatAmount(amount: number): string {
+export function formatAmount(amount?: number): string {
+  if (typeof amount !== 'number' || isNaN(amount)) {
+    return '$0.00';
+  }
+
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
     currency: 'USD',

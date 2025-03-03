@@ -1,5 +1,3 @@
-'use client';
-
 import { redirect } from 'next/navigation';
 import HeaderBox from '@/components/HeaderBox';
 import RecentTransactions from '@/components/RecentTransactions';
