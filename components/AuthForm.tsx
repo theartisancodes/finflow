@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Loader2 } from 'lucide-react';
 import Image from 'next/image';
@@ -31,7 +31,6 @@ const AuthForm = ({ type }: { type: string }) => {
       password: ''
     }
   });
-
   const onSubmit = async (data: z.infer<typeof formSchema>) => {
     setIsLoading(true);
     setErrorMessage(null);
@@ -52,7 +51,6 @@ const AuthForm = ({ type }: { type: string }) => {
         };
 
         const newUser = await signUp(userData);
-
         setUser(newUser);
       }
 
@@ -62,9 +60,9 @@ const AuthForm = ({ type }: { type: string }) => {
           password: data.password
         });
 
-        console.log(response, '__response');
         if (response?.userId) {
-          redirect('/');
+          console.log(response, '__res');
+          setUser(response);
         }
       }
     } catch (error: unknown) {
@@ -78,6 +76,61 @@ const AuthForm = ({ type }: { type: string }) => {
       setIsLoading(false);
     }
   };
+
+  // const onSubmit = async (data: z.infer<typeof formSchema>) => {
+  //   setIsLoading(true);
+  //   setErrorMessage(null);
+  //
+  //   try {
+  //     if (type === 'sign-up') {
+  //       const userData = {
+  //         firstName: data.firstName!,
+  //         lastName: data.lastName!,
+  //         address1: data.address1!,
+  //         city: data.city!,
+  //         state: data.state!,
+  //         postalCode: data.postalCode!,
+  //         dateOfBirth: data.dateOfBirth!,
+  //         ssn: data.ssn!,
+  //         email: data.email,
+  //         password: data.password
+  //       };
+  //
+  //       const newUser = await signUp(userData);
+  //
+  //       setUser(newUser);
+  //     }
+  //
+  //     if (type === 'sign-in') {
+  //       const response = await signIn({
+  //         email: data.email,
+  //         password: data.password
+  //       });
+  //
+  //       console.log(response, '__response');
+  //       if (response?.userId) {
+  //         setTimeout(() => {
+  //           router.push('/');
+  //         }, 1000); // Adds a delay to ensure state updates
+  //       }
+  //     }
+  //     setIsLoading(false);
+  //   } catch (error: unknown) {
+  //     const errorMsg =
+  //       error instanceof Error
+  //         ? error.message
+  //         : 'An unexpected error occurred.';
+  //     setErrorMessage(errorMsg);
+  //     notifyError(errorMsg);
+  //   }
+  // };
+
+  useEffect(() => {
+    if (user?.userId) {
+      console.log(user, '__user');
+      router.push('/');
+    }
+  }, [user]);
 
   return (
     <section className="auth-form">
